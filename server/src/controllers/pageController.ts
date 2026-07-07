@@ -8,7 +8,7 @@ const pageSchema = z.object({
   folderId: z.string().min(1),
   title: z.string().min(1).max(160),
   content: z.unknown().optional(),
-  icon: z.string().min(1).default("FileText")
+  icon: z.string().min(1).default("FileText"),
 });
 
 const pageUpdateSchema = pageSchema.partial();
@@ -41,7 +41,9 @@ export const createPage: RequestHandler = async (request, response, next) => {
 export const updatePage: RequestHandler = async (request, response, next) => {
   try {
     const data = pageUpdateSchema.parse(request.body);
-    const page = await Page.findByIdAndUpdate(request.params.id, data, { new: true });
+    const page = await Page.findByIdAndUpdate(request.params.id, data, {
+      new: true,
+    });
 
     if (!page) {
       throw new HttpError(404, "Page not found");

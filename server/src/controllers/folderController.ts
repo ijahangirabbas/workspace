@@ -8,7 +8,7 @@ const folderSchema = z.object({
   name: z.string().min(1).max(120),
   icon: z.string().min(1).default("Folder"),
   color: z.string().min(1).default("#3B82F6"),
-  parentId: z.string().nullable().optional()
+  parentId: z.string().nullable().optional(),
 });
 
 const folderUpdateSchema = folderSchema.partial();
@@ -35,7 +35,9 @@ export const createFolder: RequestHandler = async (request, response, next) => {
 export const updateFolder: RequestHandler = async (request, response, next) => {
   try {
     const data = folderUpdateSchema.parse(request.body);
-    const folder = await Folder.findByIdAndUpdate(request.params.id, data, { new: true });
+    const folder = await Folder.findByIdAndUpdate(request.params.id, data, {
+      new: true,
+    });
 
     if (!folder) {
       throw new HttpError(404, "Folder not found");
@@ -65,7 +67,9 @@ export const deleteFolder: RequestHandler = async (request, response, next) => {
 async function deleteFolderTree(folderId: string) {
   const childFolders = await Folder.find({ parentId: folderId }).select("_id");
 
-  await Promise.all(childFolders.map((childFolder) => deleteFolderTree(childFolder.id)));
+  await Promise.all(
+    childFolders.map((childFolder) => deleteFolderTree(childFolder.id)),
+  );
   await Page.deleteMany({ folderId });
   await Folder.findByIdAndDelete(folderId);
 }

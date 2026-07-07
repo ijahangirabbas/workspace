@@ -23,7 +23,9 @@ export function buildTree(folders: Folder[], pages: Page[]): FolderNode[] {
   const sortNodes = (items: FolderNode[]) => {
     items.sort((first, second) => first.name.localeCompare(second.name));
     items.forEach((item) => {
-      item.pages.sort((first, second) => first.title.localeCompare(second.title));
+      item.pages.sort((first, second) =>
+        first.title.localeCompare(second.title),
+      );
       sortNodes(item.folders);
     });
   };

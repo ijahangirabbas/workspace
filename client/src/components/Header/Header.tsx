@@ -1,6 +1,4 @@
 import {
-  ChevronsLeft,
-  ChevronsRight,
   Moon,
   PanelRight,
   PanelLeftOpen,

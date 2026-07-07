@@ -2,9 +2,17 @@ import type { ErrorRequestHandler } from "express";
 import { ZodError } from "zod";
 import { HttpError } from "../utils/httpError.js";
 
-export const errorHandler: ErrorRequestHandler = (error, _request, response, _next) => {
+export const errorHandler: ErrorRequestHandler = (
+  error,
+  _request,
+  response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _next,
+) => {
   if (error instanceof ZodError) {
-    response.status(400).json({ message: "Validation failed", issues: error.flatten() });
+    response
+      .status(400)
+      .json({ message: "Validation failed", issues: error.flatten() });
     return;
   }
 

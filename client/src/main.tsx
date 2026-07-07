@@ -9,5 +9,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <WorkspaceProvider>
       <AppLayout />
     </WorkspaceProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

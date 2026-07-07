@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { api } from "../services/api";
 import type { Folder, FolderNode, Page, Settings } from "../types";
 import { buildTree } from "../utils/tree";
@@ -36,7 +44,7 @@ const defaultSettings: Settings = {
   sidebarWidth: 300,
   autosaveInterval: 1200,
   editorWidth: 860,
-  accentColor: "#3B82F6"
+  accentColor: "#3B82F6",
 };
 
 const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
@@ -50,7 +58,10 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const [rightPanelOpen, setRightPanelOpen] = useState(true);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("Saved");
   const [notice, setNotice] = useState<string | null>(null);
-  const [settings, setSettings] = useLocalStorage<Settings>("workspace.settings", defaultSettings);
+  const [settings, setSettings] = useLocalStorage<Settings>(
+    "workspace.settings",
+    defaultSettings,
+  );
 
   const notify = useCallback((message: string) => {
     setNotice(message);
@@ -59,7 +70,10 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 
   const load = useCallback(async () => {
     try {
-      const [folderList, pageList] = await Promise.all([api.getFolders(), api.getPages()]);
+      const [folderList, pageList] = await Promise.all([
+        api.getFolders(),
+        api.getPages(),
+      ]);
       setFolders(folderList);
       setPages(pageList);
       setSaveStatus("Saved");
@@ -74,19 +88,27 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   }, [load]);
 
   const tree = useMemo(() => buildTree(folders, pages), [folders, pages]);
-  const activePage = useMemo(() => pages.find((page) => page._id === activePageId) ?? null, [activePageId, pages]);
+  const activePage = useMemo(
+    () => pages.find((page) => page._id === activePageId) ?? null,
+    [activePageId, pages],
+  );
 
   const createFolder = useCallback(
     async (parentId: string | null = activeFolderId) => {
       try {
-        const folder = await api.createFolder({ name: "Untitled Folder", parentId, icon: "Folder", color: settings.accentColor });
+        const folder = await api.createFolder({
+          name: "Untitled Folder",
+          parentId,
+          icon: "Folder",
+          color: settings.accentColor,
+        });
         setFolders((items) => [...items, folder]);
         setActiveFolderId(folder._id);
       } catch {
         notify("Folder could not be created");
       }
     },
-    [activeFolderId, notify, settings.accentColor]
+    [activeFolderId, notify, settings.accentColor],
   );
 
   const createPage = useCallback(
@@ -95,12 +117,21 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 
       try {
         if (!targetFolderId) {
-          const folder = await api.createFolder({ name: "Inbox", parentId: null, icon: "Folder", color: settings.accentColor });
+          const folder = await api.createFolder({
+            name: "Inbox",
+            parentId: null,
+            icon: "Folder",
+            color: settings.accentColor,
+          });
           setFolders((items) => [...items, folder]);
           targetFolderId = folder._id;
         }
 
-        const page = await api.createPage({ folderId: targetFolderId, title: "Untitled Page", icon: "FileText" });
+        const page = await api.createPage({
+          folderId: targetFolderId,
+          title: "Untitled Page",
+          icon: "FileText",
+        });
         setPages((items) => [page, ...items]);
         setActivePageId(page._id);
         setActiveFolderId(targetFolderId);
@@ -108,36 +139,46 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         notify("Page could not be created");
       }
     },
-    [activeFolderId, folders, notify, settings.accentColor]
+    [activeFolderId, folders, notify, settings.accentColor],
   );
 
   const updatePage = useCallback(
     async (pageId: string, data: Partial<Page>) => {
       setSaveStatus("Saving...");
-      setPages((items) => items.map((page) => (page._id === pageId ? { ...page, ...data, updatedAt: new Date().toISOString() } : page)));
+      setPages((items) =>
+        items.map((page) =>
+          page._id === pageId
+            ? { ...page, ...data, updatedAt: new Date().toISOString() }
+            : page,
+        ),
+      );
 
       try {
         const page = await api.updatePage(pageId, data);
-        setPages((items) => items.map((item) => (item._id === pageId ? page : item)));
+        setPages((items) =>
+          items.map((item) => (item._id === pageId ? page : item)),
+        );
         setSaveStatus("Saved");
       } catch {
         setSaveStatus("Offline");
         notify("Autosave failed");
       }
     },
-    [notify]
+    [notify],
   );
 
   const updateFolder = useCallback(
     async (folderId: string, data: Partial<Folder>) => {
       try {
         const folder = await api.updateFolder(folderId, data);
-        setFolders((items) => items.map((item) => (item._id === folderId ? folder : item)));
+        setFolders((items) =>
+          items.map((item) => (item._id === folderId ? folder : item)),
+        );
       } catch {
         notify("Folder could not be updated");
       }
     },
-    [notify]
+    [notify],
   );
 
   const deletePage = useCallback(
@@ -150,7 +191,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         notify("Page could not be deleted");
       }
     },
-    [notify]
+    [notify],
   );
 
   const deleteFolder = useCallback(
@@ -164,7 +205,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         notify("Folder could not be deleted");
       }
     },
-    [load, notify]
+    [load, notify],
   );
 
   useEffect(() => {
@@ -207,7 +248,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       updatePage,
       updateFolder,
       deletePage,
-      deleteFolder
+      deleteFolder,
     }),
     [
       activeFolderId,
@@ -225,11 +266,15 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       sidebarOpen,
       tree,
       updateFolder,
-      updatePage
-    ]
+      updatePage,
+    ],
   );
 
-  return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
+  return (
+    <WorkspaceContext.Provider value={value}>
+      {children}
+    </WorkspaceContext.Provider>
+  );
 }
 
 export function useWorkspace() {

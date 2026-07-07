@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { createPage, deletePage, getPages, updatePage } from "../controllers/pageController.js";
+import {
+  createPage,
+  deletePage,
+  getPages,
+  updatePage,
+} from "../controllers/pageController.js";
 
 export const pageRoutes = Router();
 

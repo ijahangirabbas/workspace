@@ -11,19 +11,30 @@ export function AppLayout() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = settings.theme;
-    document.documentElement.style.setProperty("--primary", settings.accentColor);
+    document.documentElement.style.setProperty(
+      "--primary",
+      settings.accentColor,
+    );
   }, [settings.accentColor, settings.theme]);
 
   return (
     <div className="app-shell">
       <Header />
-      <div className="workspace-grid" data-sidebar-open={sidebarOpen} data-panel-open={rightPanelOpen}>
+      <div
+        className="workspace-grid"
+        data-sidebar-open={sidebarOpen}
+        data-panel-open={rightPanelOpen}
+      >
         <Sidebar />
         <EditorPane />
         <RightPanel />
       </div>
       <SettingsModal />
-      {notice ? <div className="toast" role="status">{notice}</div> : null}
+      {notice ? (
+        <div className="toast" role="status">
+          {notice}
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -1,12 +1,39 @@
-import { ChevronRight, Copy, FilePlus, FileText, Folder, FolderOpen, FolderPlus, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {
+  ChevronRight,
+  Copy,
+  FilePlus,
+  FileText,
+  Folder,
+  FolderOpen,
+  FolderPlus,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
 import { useWorkspace } from "../../context/WorkspaceContext";
 import type { FolderNode, Page } from "../../types";
 import { ContextMenu } from "../ContextMenu/ContextMenu";
 import { FolderTree } from "./FolderTree";
 
-export function FolderItem({ node, depth }: { node: FolderNode; depth: number }) {
-  const { activeFolderId, activePage, setActiveFolderId, setActivePageId, createFolder, createPage, updateFolder, deleteFolder, deletePage } = useWorkspace();
+export function FolderItem({
+  node,
+  depth,
+}: {
+  node: FolderNode;
+  depth: number;
+}) {
+  const {
+    activeFolderId,
+    activePage,
+    setActiveFolderId,
+    setActivePageId,
+    createFolder,
+    createPage,
+    updateFolder,
+    deleteFolder,
+    deletePage,
+  } = useWorkspace();
   const [open, setOpen] = useState(true);
   const [renaming, setRenaming] = useState(false);
   const [name, setName] = useState(node.name);
@@ -31,7 +58,11 @@ export function FolderItem({ node, depth }: { node: FolderNode; depth: number })
           setMenuOpen(true);
         }}
       >
-        <button className="chevron" aria-label={open ? "Collapse folder" : "Expand folder"} onClick={() => setOpen(!open)}>
+        <button
+          className="chevron"
+          aria-label={open ? "Collapse folder" : "Expand folder"}
+          onClick={() => setOpen(!open)}
+        >
           <ChevronRight size={14} className={open ? "rotated" : ""} />
         </button>
         <button
@@ -42,7 +73,11 @@ export function FolderItem({ node, depth }: { node: FolderNode; depth: number })
           }}
           onDoubleClick={() => setRenaming(true)}
         >
-          {open ? <FolderOpen size={16} color={node.color} /> : <Folder size={16} color={node.color} />}
+          {open ? (
+            <FolderOpen size={16} color={node.color} />
+          ) : (
+            <Folder size={16} color={node.color} />
+          )}
           {renaming ? (
             <input
               value={name}
@@ -58,21 +93,53 @@ export function FolderItem({ node, depth }: { node: FolderNode; depth: number })
             <span>{node.name}</span>
           )}
         </button>
-        <button className="icon-button small ghost" aria-label="Folder menu" onClick={() => setMenuOpen(!menuOpen)}>
+        <button
+          className="icon-button small ghost"
+          aria-label="Folder menu"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
           <MoreHorizontal size={15} />
         </button>
         <ContextMenu open={menuOpen} onClose={() => setMenuOpen(false)}>
-          <button onClick={() => void createPage(node._id)}><FilePlus size={14} />New Page</button>
-          <button onClick={() => void createFolder(node._id)}><FolderPlus size={14} />New Folder</button>
-          <button onClick={() => setRenaming(true)}><Pencil size={14} />Rename</button>
-          <button onClick={() => void updateFolder(node._id, { name: `${node.name} Copy` })}><Copy size={14} />Duplicate Name</button>
-          <button className="danger" onClick={() => void deleteFolder(node._id)}><Trash2 size={14} />Delete</button>
+          <button onClick={() => void createPage(node._id)}>
+            <FilePlus size={14} />
+            New Page
+          </button>
+          <button onClick={() => void createFolder(node._id)}>
+            <FolderPlus size={14} />
+            New Folder
+          </button>
+          <button onClick={() => setRenaming(true)}>
+            <Pencil size={14} />
+            Rename
+          </button>
+          <button
+            onClick={() =>
+              void updateFolder(node._id, { name: `${node.name} Copy` })
+            }
+          >
+            <Copy size={14} />
+            Duplicate Name
+          </button>
+          <button
+            className="danger"
+            onClick={() => void deleteFolder(node._id)}
+          >
+            <Trash2 size={14} />
+            Delete
+          </button>
         </ContextMenu>
       </div>
       {open ? (
         <>
           {node.pages.map((page) => (
-            <PageRow key={page._id} page={page} depth={depth + 1} active={activePage?._id === page._id} onDelete={() => void deletePage(page._id)} />
+            <PageRow
+              key={page._id}
+              page={page}
+              depth={depth + 1}
+              active={activePage?._id === page._id}
+              onDelete={() => void deletePage(page._id)}
+            />
           ))}
           <FolderTree nodes={node.folders} depth={depth + 1} />
         </>
@@ -81,7 +148,17 @@ export function FolderItem({ node, depth }: { node: FolderNode; depth: number })
   );
 }
 
-function PageRow({ page, depth, active, onDelete }: { page: Page; depth: number; active: boolean; onDelete: () => void }) {
+function PageRow({
+  page,
+  depth,
+  active,
+  onDelete,
+}: {
+  page: Page;
+  depth: number;
+  active: boolean;
+  onDelete: () => void;
+}) {
   const { setActivePageId, setActiveFolderId, updatePage } = useWorkspace();
   const [renaming, setRenaming] = useState(false);
   const [title, setTitle] = useState(page.title);
@@ -95,7 +172,11 @@ function PageRow({ page, depth, active, onDelete }: { page: Page; depth: number;
   };
 
   return (
-    <div className="tree-row page-row" data-active={active} style={{ paddingLeft: offset }}>
+    <div
+      className="tree-row page-row"
+      data-active={active}
+      style={{ paddingLeft: offset }}
+    >
       <button
         className="tree-label"
         onClick={() => {
@@ -120,7 +201,11 @@ function PageRow({ page, depth, active, onDelete }: { page: Page; depth: number;
           <span>{page.title}</span>
         )}
       </button>
-      <button className="icon-button small ghost" aria-label="Delete page" onClick={onDelete}>
+      <button
+        className="icon-button small ghost"
+        aria-label="Delete page"
+        onClick={onDelete}
+      >
         <Trash2 size={14} />
       </button>
     </div>

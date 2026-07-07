@@ -57,7 +57,10 @@ button {
   border-bottom: 1px solid var(--border);
   display: grid;
   gap: 16px;
-  grid-template-columns: minmax(240px, 1fr) minmax(280px, 460px) minmax(180px, 1fr);
+  grid-template-columns: minmax(240px, 1fr) minmax(280px, 460px) minmax(
+      180px,
+      1fr
+    );
   height: 56px;
   padding: 0 16px;
   position: fixed;
@@ -618,8 +621,6 @@ button {
   }
 }
 
-
-
 .logo-button {
   position: relative;
   width: 48px;
@@ -639,7 +640,9 @@ button {
 
 .logo-button svg {
   position: absolute;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 /* Default: show Sparkles */

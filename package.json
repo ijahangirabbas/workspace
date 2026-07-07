@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "description": "A personal digital workspace organized around folders and rich pages.",
+  "license": "MIT",
   "workspaces": [
     "client",
     "server"

@@ -5,9 +5,9 @@ const folderSchema = new Schema(
     name: { type: String, required: true, trim: true, maxlength: 120 },
     icon: { type: String, default: "Folder" },
     color: { type: String, default: "#3B82F6" },
-    parentId: { type: Schema.Types.ObjectId, ref: "Folder", default: null }
+    parentId: { type: Schema.Types.ObjectId, ref: "Folder", default: null },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 folderSchema.index({ parentId: 1, name: 1 });
