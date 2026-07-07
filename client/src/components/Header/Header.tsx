@@ -27,17 +27,28 @@ export function Header() {
     pages,
     folders,
     setActivePageId,
-    setActiveFolderId
+    setActiveFolderId,
   } = useWorkspace();
   const [query, setQuery] = useState("");
 
-  const location = findFolderPath(tree, activePage?.folderId ?? activeFolderId ?? undefined);
+  const location = findFolderPath(
+    tree,
+    activePage?.folderId ?? activeFolderId ?? undefined,
+  );
   const results = useMemo(() => {
     if (!query.trim()) return [];
     const value = query.toLowerCase();
     return [
-      ...folders.filter((folder) => folder.name.toLowerCase().includes(value)).map((folder) => ({ id: folder._id, label: folder.name, type: "folder" })),
-      ...pages.filter((page) => page.title.toLowerCase().includes(value)).map((page) => ({ id: page._id, label: page.title, type: "page" }))
+      ...folders
+        .filter((folder) => folder.name.toLowerCase().includes(value))
+        .map((folder) => ({
+          id: folder._id,
+          label: folder.name,
+          type: "folder",
+        })),
+      ...pages
+        .filter((page) => page.title.toLowerCase().includes(value))
+        .map((page) => ({ id: page._id, label: page.title, type: "page" })),
     ].slice(0, 8);
   }, [folders, pages, query]);
 
@@ -125,9 +136,10 @@ export function Header() {
         >
           <Settings size={18} />
         </button>
-        <div className="avatar" aria-label="User avatar"></div>
+        <div className="avatar" aria-label="User avatar">
+          J
+        </div>
       </nav>
     </header>
   );
 }
-
