@@ -1,21 +1,70 @@
 {
   "name": "workspace-app",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A personal digital workspace organized around folders and rich pages.",
   "license": "MIT",
+  "main": "electron/main.js",
   "workspaces": [
-    "client",
-    "server"
+    "frontend",
+    "backend"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev -w server\" \"npm run dev -w client\"",
-    "build": "npm run build -w server && npm run build -w client",
-    "lint": "npm run lint -w server && npm run lint -w client",
+    "dev": "concurrently \"npm run dev -w backend\" \"npm run dev -w frontend\" \"npm run electron\"",
+    "build": "npm run build -w backend && npm run build -w frontend",
+    "electron": "electron .",
+    "package": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "lint": "npm run lint -w backend && npm run lint -w frontend",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,css,md}\""
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "helmet": "^7.1.0",
+    "mongoose": "^8.5.4",
+    "morgan": "^1.10.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",
+    "electron": "^43.0.0",
+    "electron-builder": "^26.15.3",
     "prettier": "^3.3.3"
+  },
+  "build": {
+    "appId": "com.workspace.app",
+    "productName": "Workspace",
+    "electronDist": "node_modules/electron/dist",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "package.json",
+      "electron/**/*",
+      "frontend/dist/**/*",
+      "backend/dist/**/*",
+      "backend/package.json"
+    ],
+    "win": {
+      "icon": "assets/icon.png",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Workspace",
+      "uninstallDisplayName": "Workspace"
+    }
   }
 }
